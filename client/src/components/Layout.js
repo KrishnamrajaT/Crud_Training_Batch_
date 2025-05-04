@@ -47,14 +47,14 @@ export const Layout = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
-        <Grid size={8}>
+        <Grid sx={12} md={6}>
+          <UsersTable setIsEdit={setIsEdit} users={users} fetchUserData={fetchUserData} setUpdateUserId={setUpdateUserId} />
         </Grid>
-        <Grid size={4}>
+        <Grid sx={12} md={6}>
           {/* <Box marginTop={}> */}
-          {/* {isEdit ? <UpdateUser updateUserId={updateUserId} setIsRefesh={setIsRefesh}  setIsEdit={setIsEdit} /> : <CreateUser setIsRefesh={setIsRefesh} />} */}
+          {isEdit ? <UpdateUser updateUserId={updateUserId} setIsRefesh={setIsRefesh}  setIsEdit={setIsEdit} /> : <CreateUser setIsRefesh={setIsRefesh} />}
           {/* </Box> */}
         </Grid>
-          <UsersTable setIsEdit={setIsEdit} users={users} fetchUserData={fetchUserData} setUpdateUserId={setUpdateUserId} />
       </Grid>
     </Box>
   );
