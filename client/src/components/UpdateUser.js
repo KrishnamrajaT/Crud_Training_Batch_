@@ -37,7 +37,7 @@ const UpdateUser = ({ setIsEdit, updateUserId, setIsRefesh }) => {
   };
 
   const updateUser = () => {
-    let URL = `http://localhost:8080/user/update/${updateUserId}`;
+    let URL = `https://training-batch-crud-server.vercel.app/user/update/${updateUserId}`;
 
     return axios
       .put(URL, formData)
