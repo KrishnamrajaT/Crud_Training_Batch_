@@ -38,7 +38,7 @@ const UsersTable = ({ setIsEdit, setUpdateUserId, users, fetchUserData}) => {
 
   const handleDelete = (id) => {
     // Handle delete logic here
-    let URL = `https://training-batch-crud-server.vercel.app/delete/${id}`;
+    let URL = `https://training-batch-crud-server.vercel.app/user/delete/${id}`;
     axios
       .delete(URL)
       .then(() => {
