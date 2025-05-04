@@ -18,7 +18,7 @@ const CreateUser = ({ setIsRefesh }) => {
   };
 
   const regUser = () => {
-    const URL = "http://localhost:8080/user/register";
+    const URL = "https://training-batch-crud-server.vercel.app/user/register";
     return axios
       .post(URL, formData)
       .then((res) => {

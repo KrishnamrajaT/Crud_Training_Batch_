@@ -28,7 +28,7 @@ export const Layout = () => {
 
 
   const fetchUserData = () => {
-    let URL = "http://localhost:8080/user";
+    let URL = "https://training-batch-crud-server.vercel.app/user";
     axios
       .get(URL)
       .then((res) => {
@@ -48,13 +48,13 @@ export const Layout = () => {
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid size={8}>
-          <UsersTable setIsEdit={setIsEdit} users={users} fetchUserData={fetchUserData} setUpdateUserId={setUpdateUserId} />
         </Grid>
         <Grid size={4}>
           {/* <Box marginTop={}> */}
-          {isEdit ? <UpdateUser updateUserId={updateUserId} setIsRefesh={setIsRefesh}  setIsEdit={setIsEdit} /> : <CreateUser setIsRefesh={setIsRefesh} />}
+          {/* {isEdit ? <UpdateUser updateUserId={updateUserId} setIsRefesh={setIsRefesh}  setIsEdit={setIsEdit} /> : <CreateUser setIsRefesh={setIsRefesh} />} */}
           {/* </Box> */}
         </Grid>
+          <UsersTable setIsEdit={setIsEdit} users={users} fetchUserData={fetchUserData} setUpdateUserId={setUpdateUserId} />
       </Grid>
     </Box>
   );

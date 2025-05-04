@@ -19,7 +19,7 @@ const UpdateUser = ({ setIsEdit, updateUserId, setIsRefesh }) => {
   };
 
   const fetchUser = () => {
-    let URL = `http://localhost:8080/user/getById/${updateUserId}`;
+    let URL = `https://training-batch-crud-server.vercel.app/user/getById/${updateUserId}`;
 
     axios
       .get(URL)
