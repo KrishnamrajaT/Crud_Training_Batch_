@@ -1,10 +1,10 @@
 import "./App.css";
-import {Layout} from "./components/Layout";
+import UserLayout from "./Warriors/Layout";
 
 function App() {
   return (
     <div >
-      <Layout/>
+      <UserLayout/>
     </div>
   );
 }
