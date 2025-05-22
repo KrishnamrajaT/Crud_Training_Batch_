@@ -1,70 +1,89 @@
-import { useState } from 'react';
-import './createUser.css';
+import { useState } from "react";
+import axios from "axios";
+import "./createUser.css";
 
-const CreateUser = () => {
+const CreateUser = ({isRefresh, setIsRefresh}) => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    city: ''
+    username: "",
+    email: "",
+    city: "",
   });
 
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Other'];
+  const cities = [
+    "New York",
+    "Los Angeles",
+    "Chicago",
+    "Houston",
+    "Phoenix",
+    "Other",
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors({
         ...errors,
-        [name]: ''
+        [name]: "",
       });
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+
+    if (!formData.username.trim()) {
+      newErrors.username = "Name is required";
     }
-    
+
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = "Please enter a valid email";
     }
-    
+
     if (!formData.city) {
-      newErrors.city = 'Please select a city';
+      newErrors.city = "Please select a city";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  const createUser = () => {
+    let URL = "https://training-batch-crud-server.vercel.app/user/register";
+    axios
+      .post(URL, formData)
+      .then((res) =>{
+        console.log(res.data);
+        setIsRefresh(!isRefresh)
+      }) 
+      .catch((err) => console.log(err));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (validateForm()) {
-      console.log('Form submitted:', formData);
+      createUser();
+      console.log("Form submitted:", formData);
       setIsSubmitted(true);
-      // Here you would typically send data to an API
     }
   };
 
   const resetForm = () => {
     setFormData({
-      name: '',
-      email: '',
-      city: ''
+      username: "",
+      email: "",
+      city: "",
     });
     setErrors({});
     setIsSubmitted(false);
@@ -87,7 +106,7 @@ const CreateUser = () => {
   return (
     <div className="form-container">
       <h1 className="form-title">Create User</h1>
-      
+
       <form onSubmit={handleSubmit} className="user-form">
         <div className="form-group">
           <label htmlFor="name" className="form-label">
@@ -95,16 +114,16 @@ const CreateUser = () => {
           </label>
           <input
             type="text"
-            id="name"
-            name="name"
+            id="username"
+            name="username"
             value={formData.name}
             onChange={handleChange}
-            className={`form-input ${errors.name ? 'input-error' : ''}`}
+            className={`form-input ${errors.name ? "input-error" : ""}`}
             placeholder="Enter your full name"
           />
           {errors.name && <span className="error-message">{errors.name}</span>}
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="email" className="form-label">
             Email Address
@@ -115,12 +134,14 @@ const CreateUser = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className={`form-input ${errors.email ? 'input-error' : ''}`}
+            className={`form-input ${errors.email ? "input-error" : ""}`}
             placeholder="Enter your email address"
           />
-          {errors.email && <span className="error-message">{errors.email}</span>}
+          {errors.email && (
+            <span className="error-message">{errors.email}</span>
+          )}
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="city" className="form-label">
             City
@@ -130,7 +151,9 @@ const CreateUser = () => {
             name="city"
             value={formData.city}
             onChange={handleChange}
-            className={`form-input form-select ${errors.city ? 'input-error' : ''}`}
+            className={`form-input form-select ${
+              errors.city ? "input-error" : ""
+            }`}
           >
             <option value="">Select your city</option>
             {cities.map((city) => (
@@ -141,7 +164,7 @@ const CreateUser = () => {
           </select>
           {errors.city && <span className="error-message">{errors.city}</span>}
         </div>
-        
+
         <button type="submit" className="form-submit-button">
           Submit
         </button>

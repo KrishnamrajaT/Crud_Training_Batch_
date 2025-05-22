@@ -43,8 +43,9 @@ const rows = [
   createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-export default function UserDataTable() {
+export default function UserDataTable({ setIsRefresh, isRefresh }) {
   let [usersData, setUsersData] = React.useState(null);
+  let [isFetchUsersData, setIsFetchUsersData] = React.useState(false);
 
   let baseUrl = "https://training-batch-crud-server.vercel.app/user";
 
@@ -53,14 +54,26 @@ export default function UserDataTable() {
       .get(baseUrl)
       .then((res) => {
         setUsersData(res.data);
-        console.log(usersData, "usersData");
+        console.log(res.data, "usersData");
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const deleteUser = (id) => {
+    let baseUrl = `https://training-batch-crud-server.vercel.app/user/delete/${id}`;
+    axios
+      .delete(baseUrl)
+      .then((res) => {
+        setIsRefresh(!isRefresh);
+        console.log(res);
       })
       .catch((err) => console.log(err));
   };
 
   React.useEffect(() => {
     fetchUserData();
-  }, []);
+  }, [isRefresh]);
+
 
   return (
     <TableContainer component={Paper} sx={{ maxHeight: 600 }}>
@@ -74,27 +87,35 @@ export default function UserDataTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {usersData?.map((item, ind) => (
-            <StyledTableRow key={ind}>
-              <StyledTableCell component="th" scope="row">
-                {item.username}
-              </StyledTableCell>
-              <StyledTableCell component="th" scope="row">
-                {item.city}
-              </StyledTableCell>
-              <StyledTableCell component="th" scope="row">
-                {item.email}
-              </StyledTableCell>
-              <Stack direction="row" spacing={2}>
-                <Button variant="outlined" color="success">
-                  Update
-                </Button>
-                <Button variant="outlined" color="error">
-                  Delete
-                </Button>
-              </Stack>
-            </StyledTableRow>
-          ))}
+          {usersData?.length > 0 ? (
+            usersData?.map((item, ind) => (
+              <StyledTableRow key={ind}>
+                <StyledTableCell component="th" scope="row">
+                  {item.username}
+                </StyledTableCell>
+                <StyledTableCell component="th" scope="row">
+                  {item.city}
+                </StyledTableCell>
+                <StyledTableCell component="th" scope="row">
+                  {item.email}
+                </StyledTableCell>
+                <Stack direction="row" spacing={2}>
+                  <Button variant="outlined" color="success">
+                    Update
+                  </Button>
+                  <Button
+                    onClick={() => deleteUser(item._id)}
+                    variant="outlined"
+                    color="error"
+                  >
+                    Delete
+                  </Button>
+                </Stack>
+              </StyledTableRow>
+            ))
+          ) : (
+            <h1 style={{textAlign:"center", marginLeft:"60px"}}>No users found</h1>
+          )}
         </TableBody>
       </Table>
     </TableContainer>
