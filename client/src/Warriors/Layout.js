@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import UserDataTable from "./userDataTable";
 import CreateUser from "./createUser";
@@ -8,7 +8,7 @@ export default function UserLayout() {
   let [isRefresh, setIsRefresh] = React.useState(false);
   let [isEdit, setIsEdit] = React.useState(false);
   let [updateUserId, setUpdateUserId] = React.useState(null);
-  
+
   return (
     <Box
       display={"flex"}
