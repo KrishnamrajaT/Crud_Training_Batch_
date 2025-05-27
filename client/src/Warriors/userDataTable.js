@@ -10,6 +10,8 @@ import Paper from "@mui/material/Paper";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+import Skeleton from "@mui/material/Skeleton";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,28 +37,31 @@ function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
 }
 
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
-export default function UserDataTable({ setIsRefresh, isRefresh }) {
+export default function UserDataTable({
+  setIsRefresh,
+  isRefresh,
+  setIsEdit,
+  setUpdateUserId,
+}) {
   let [usersData, setUsersData] = React.useState(null);
-  let [isFetchUsersData, setIsFetchUsersData] = React.useState(false);
+  let [isLoading, setIsLoading] = React.useState(false);
 
   let baseUrl = "https://training-batch-crud-server.vercel.app/user";
 
   const fetchUserData = () => {
+    setIsLoading(true);
     axios
       .get(baseUrl)
       .then((res) => {
+        setIsLoading(false);
         setUsersData(res.data);
+
         console.log(res.data, "usersData");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setIsLoading(false);
+        console.log(err);
+      });
   };
 
   const deleteUser = (id) => {
@@ -74,7 +79,6 @@ export default function UserDataTable({ setIsRefresh, isRefresh }) {
     fetchUserData();
   }, [isRefresh]);
 
-
   return (
     <TableContainer component={Paper} sx={{ maxHeight: 600 }}>
       <Table stickyHeader aria-label="sticky table" sx={{ minWidth: 700 }}>
@@ -87,34 +91,56 @@ export default function UserDataTable({ setIsRefresh, isRefresh }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {usersData?.length > 0 ? (
-            usersData?.map((item, ind) => (
-              <StyledTableRow key={ind}>
-                <StyledTableCell component="th" scope="row">
-                  {item.username}
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {item.city}
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {item.email}
-                </StyledTableCell>
-                <Stack direction="row" spacing={2}>
-                  <Button variant="outlined" color="success">
-                    Update
-                  </Button>
-                  <Button
-                    onClick={() => deleteUser(item._id)}
-                    variant="outlined"
-                    color="error"
-                  >
-                    Delete
-                  </Button>
-                </Stack>
-              </StyledTableRow>
-            ))
+          {isLoading ? (
+            <Box sx={{ width: 300 }}>
+              <Skeleton animation="wave" height={50} width={800} />
+              <Skeleton animation="wave" height={50} width={800} />
+              <Skeleton animation="wave" height={50} width={800} />
+              <Skeleton animation="wave" height={50} width={800} />
+              <Skeleton animation="wave" height={50} width={800} />
+              <Skeleton animation="wave" height={50} width={800} />
+            </Box>
           ) : (
-            <h1 style={{textAlign:"center", marginLeft:"60px"}}>No users found</h1>
+            <>
+              {usersData?.length > 0 ? (
+                usersData?.map((item, ind) => (
+                  <StyledTableRow key={ind}>
+                    <StyledTableCell component="th" scope="row">
+                      {item.username}
+                    </StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {item.city}
+                    </StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {item.email}
+                    </StyledTableCell>
+                    <Stack direction="row" spacing={2}>
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          setUpdateUserId(item._id);
+                          setIsEdit(true);
+                        }}
+                        color="success"
+                      >
+                        Update
+                      </Button>
+                      <Button
+                        onClick={() => deleteUser(item._id)}
+                        variant="outlined"
+                        color="error"
+                      >
+                        Delete
+                      </Button>
+                    </Stack>
+                  </StyledTableRow>
+                ))
+              ) : (
+                <h1 style={{ textAlign: "center", marginLeft: "60px" }}>
+                  No users found
+                </h1>
+              )}
+            </>
           )}
         </TableBody>
       </Table>
