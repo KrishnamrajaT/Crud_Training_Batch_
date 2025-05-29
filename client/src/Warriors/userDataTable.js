@@ -12,6 +12,13 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchDataPending,
+  fetchDataSuccess,
+  setUsersDate,
+  refresh,
+} from "../store/usersReducer";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -33,30 +40,25 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+export default function UserDataTable({ setIsEdit, setUpdateUserId }) {
+  const dispacth = useDispatch();
 
-export default function UserDataTable({
-  setIsRefresh,
-  isRefresh,
-  setIsEdit,
-  setUpdateUserId,
-}) {
-  let [usersData, setUsersData] = React.useState(null);
-  let [isLoading, setIsLoading] = React.useState(false);
+  let getStoreData = useSelector((state) => state.userReducer.usersDate);
+  let loading = useSelector((state) => state.userReducer.loading);
+  let isRefresh = useSelector((state) => state.userReducer.isRefresh);
 
   let baseUrl = "https://training-batch-crud-server.vercel.app/user";
 
-  const fetchUserData = () => {
-    setIsLoading(true);
+  const fetchUsers = () => {
+    dispacth(fetchDataPending());
     axios
       .get(baseUrl)
       .then((res) => {
-        setIsLoading(false);
-        setUsersData(res.data);
-
-        console.log(res.data, "usersData");
+        dispacth(fetchDataSuccess());
+        dispacth(setUsersDate(res.data));
       })
       .catch((err) => {
-        setIsLoading(false);
+        dispacth(fetchDataSuccess());
         console.log(err);
       });
   };
@@ -66,14 +68,14 @@ export default function UserDataTable({
     axios
       .delete(baseUrl)
       .then((res) => {
-        setIsRefresh(!isRefresh);
+        dispacth(refresh());
         console.log(res);
       })
       .catch((err) => console.log(err));
   };
 
   React.useEffect(() => {
-    fetchUserData();
+    fetchUsers();
   }, [isRefresh]);
 
   return (
@@ -88,7 +90,7 @@ export default function UserDataTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {isLoading ? (
+          {loading ? (
             <Box sx={{ width: 300 }}>
               <Skeleton animation="wave" height={50} width={800} />
               <Skeleton animation="wave" height={50} width={800} />
@@ -99,8 +101,8 @@ export default function UserDataTable({
             </Box>
           ) : (
             <>
-              {usersData?.length > 0 ? (
-                usersData?.map((item, ind) => (
+              {getStoreData?.length > 0 ? (
+                getStoreData?.map((item, ind) => (
                   <StyledTableRow key={ind}>
                     <StyledTableCell component="th" scope="row">
                       {item.username}

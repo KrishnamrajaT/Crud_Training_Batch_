@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./createUser.css";
+import { refresh } from "../store/usersReducer";
+import { useDispatch } from "react-redux";
 
-const UpdateUser = ({ isRefresh, setIsRefresh, updateUserId, }) => {
+const UpdateUser = ({ updateUserId,setIsEdit }) => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -11,6 +13,7 @@ const UpdateUser = ({ isRefresh, setIsRefresh, updateUserId, }) => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const dispacth = useDispatch();
 
   const fetchUser = () => {
     let URL = `https://training-batch-crud-server.vercel.app/user/getById/${updateUserId}`;
@@ -82,7 +85,7 @@ const UpdateUser = ({ isRefresh, setIsRefresh, updateUserId, }) => {
       .put(URL, formData)
       .then((res) => {
         console.log(res.data);
-        setIsRefresh(!isRefresh);
+        dispacth(refresh());
       })
       .catch((err) => console.log(err));
   };
@@ -94,6 +97,7 @@ const UpdateUser = ({ isRefresh, setIsRefresh, updateUserId, }) => {
       updateUser();
       console.log("Form submitted:", formData);
       setIsSubmitted(true);
+      setIsEdit(false)
     }
   };
 

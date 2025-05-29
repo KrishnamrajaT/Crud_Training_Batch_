@@ -25,7 +25,7 @@ export default function UserLayout() {
       </Box>
       <Box>
         {isEdit ? (
-          <UpdateUser updateUserId={updateUserId} isRefresh={isRefresh} setIsRefresh={setIsRefresh} />
+          <UpdateUser setIsEdit={setIsEdit} updateUserId={updateUserId} isRefresh={isRefresh} setIsRefresh={setIsRefresh} />
         ) : (
           <CreateUser isRefresh={isRefresh} setIsRefresh={setIsRefresh} />
         )}
