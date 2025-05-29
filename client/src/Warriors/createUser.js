@@ -1,8 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import "./createUser.css";
-
-const CreateUser = ({isRefresh, setIsRefresh}) => {
+import { refresh } from "../store/usersReducer";
+import { useDispatch } from "react-redux";
+const CreateUser = ({ isRefresh, setIsRefresh }) => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -11,6 +12,7 @@ const CreateUser = ({isRefresh, setIsRefresh}) => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const dispatch = useDispatch();
 
   const cities = [
     "New York",
@@ -62,10 +64,10 @@ const CreateUser = ({isRefresh, setIsRefresh}) => {
     let URL = "https://training-batch-crud-server.vercel.app/user/register";
     axios
       .post(URL, formData)
-      .then((res) =>{
+      .then((res) => {
         console.log(res.data);
-        setIsRefresh(!isRefresh)
-      }) 
+        dispatch(refresh());
+      })
       .catch((err) => console.log(err));
   };
 
